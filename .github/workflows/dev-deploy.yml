@@ -2,12 +2,9 @@ name: Dev Deploy
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - "envs/dev/**"
-      - "modules/**"
-      - "scripts/**"
-      - ".github/workflows/dev-deploy.yml"
+    branches:
+      - main
+
   workflow_dispatch:
 
 permissions:
