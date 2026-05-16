@@ -1,0 +1,45 @@
+name: Prod Destroy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    environment: prod
+
+    defaults:
+      run:
+        working-directory: envs/prod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.PROD_AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Copy tfvars example for first run
+        run: |
+          if [ ! -f terraform.tfvars ]; then
+            cp terraform.tfvars.example terraform.tfvars
+          fi
+
+      - name: Terraform init
+        run: terraform init
+
+      - name: Terraform plan destroy
+        run: terraform plan -destroy -out=destroy.tfplan
+
+      - name: Terraform apply destroy
+        run: terraform apply destroy.tfplan

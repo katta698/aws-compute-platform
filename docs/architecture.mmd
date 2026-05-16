@@ -1,0 +1,40 @@
+flowchart LR
+    Dev[Developer Push or PR] --> GH[GitHub Actions]
+    GH -->|OIDC Token| OIDC[AWS IAM OIDC Provider]
+    OIDC --> Role[Dev or Prod Terraform Deploy Role]
+    Role --> TF[Terraform Apply or Destroy]
+
+    subgraph AWS[AWS Cloud]
+      subgraph VPC[VPC]
+        subgraph Public[Public Subnets]
+          ALB[Application Load Balancer]
+          NAT[NAT Gateway]
+        end
+        subgraph Private[Private App Subnets]
+          ASG[Auto Scaling Group]
+          EC2A[EC2 App Instance AZ A]
+          EC2B[EC2 App Instance AZ B]
+          EBSA[Root and Data EBS]
+          EBSB[Root and Data EBS]
+        end
+      end
+      SSM[SSM Session Manager]
+      CW[CloudWatch Logs Metrics Alarms]
+      SNS[SNS Email Alerts]
+      Backup[AWS Backup Vault and Plan]
+    end
+
+    Internet[Internet] --> ALB
+    ALB --> ASG
+    ASG --> EC2A
+    ASG --> EC2B
+    EC2A --> EBSA
+    EC2B --> EBSB
+    EC2A --> SSM
+    EC2B --> SSM
+    EC2A --> CW
+    EC2B --> CW
+    CW --> SNS
+    EBSA --> Backup
+    EBSB --> Backup
+    Private --> NAT
