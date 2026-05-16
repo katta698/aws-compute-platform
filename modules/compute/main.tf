@@ -111,13 +111,13 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_autoscaling_group" "this" {
-  name                = "${var.name_prefix}-asg"
-  desired_capacity    = var.desired_capacity
-  min_size            = var.min_size
-  max_size            = var.max_size
-  vpc_zone_identifier = var.private_app_subnet_ids
-  target_group_arns   = [aws_lb_target_group.this.arn]
-  health_check_type   = "ELB"
+  name                      = "${var.name_prefix}-asg"
+  desired_capacity          = var.desired_capacity
+  min_size                  = var.min_size
+  max_size                  = var.max_size
+  vpc_zone_identifier       = var.private_app_subnet_ids
+  target_group_arns         = [aws_lb_target_group.this.arn]
+  health_check_type         = "ELB"
   health_check_grace_period = 180
 
   launch_template {
