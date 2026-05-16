@@ -204,3 +204,4 @@ For risky changes:
 - Blue/green deployment strategy
 - AWS Config and GuardDuty
 # trigger
+trigger dev deploy
