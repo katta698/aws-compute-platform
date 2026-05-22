@@ -38,7 +38,7 @@ variable "app_port" {
 
 variable "root_volume_size" {
   type    = number
-  default = 20
+  default = 30
 }
 
 variable "data_volume_size" {
